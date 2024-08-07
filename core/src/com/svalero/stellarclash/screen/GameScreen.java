@@ -2,6 +2,7 @@ package com.svalero.stellarclash.screen;
 
 import com.badlogic.gdx.Screen;
 import com.svalero.stellarclash.manager.RenderManager;
+import com.svalero.stellarclash.manager.ResourceManager;
 import com.svalero.stellarclash.manager.SpriteManager;
 
 public class GameScreen implements Screen {
@@ -12,6 +13,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        ResourceManager.loadAllResources();
+        // FIXME La carga debería hacerse en un SplashScreen antes de llegar a ésta
+        while (!ResourceManager.update()) {}
         spriteManager = new SpriteManager();
         renderManager = new RenderManager(spriteManager);
     }

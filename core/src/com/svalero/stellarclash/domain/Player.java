@@ -9,14 +9,14 @@ public class Player extends Character{
     public int score;
     public int lives;
 
-    public Player(Texture texture){
-        super(texture, new Vector2(0,0));
+    public Player(String animationName){
+        super(new Vector2(0,0), animationName);
         lives = 3;
     }
 
     //Constructor que hereda de la clase padre.
-    public Player (Texture texture, Vector2 position){
-        super(texture,position);
+    public Player (Vector2 position, String animationName){
+        super(position, animationName);
         lives = 3;
     }
 

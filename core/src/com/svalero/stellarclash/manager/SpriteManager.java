@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.svalero.stellarclash.domain.Player;
 import com.svalero.stellarclash.screen.MainMenuScreen;
@@ -18,7 +19,7 @@ public class SpriteManager implements Disposable {
     }
 
     private void initialize(){
-        player = new Player(new Texture("badlogic.jpg"));
+        player = new Player(new Vector2(0,0),"player");
         pause = false;
     }
 
