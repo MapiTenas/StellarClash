@@ -43,7 +43,7 @@ public class MainMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 // Ir a la pantalla de configuración
                 dispose();
-                //((Game) Gdx.app.getApplicationListener()).setScreen(new PreferencesScreen());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new PreferencesScreen());
 
             }
         });
@@ -58,7 +58,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        VisLabel aboutLabel = new VisLabel("Probando libGDX - Mapi Tenas 2024");
+        VisLabel aboutLabel = new VisLabel("          Mapi Tenas 2024");
 
         // Añade filas a la tabla y añade los componentes
         table.row();
