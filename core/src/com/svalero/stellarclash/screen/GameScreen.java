@@ -1,29 +1,25 @@
 package com.svalero.stellarclash.screen;
 
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.svalero.stellarclash.domain.Player;
+import com.svalero.stellarclash.manager.RenderManager;
+import com.svalero.stellarclash.manager.SpriteManager;
 
 public class GameScreen implements Screen {
-    SpriteBatch batch;
-    Player player;
+
+    SpriteManager spriteManager;
+    RenderManager renderManager;
 
 
     @Override
     public void show() {
-        batch = new SpriteBatch();
-        player = new Player(new Texture("badlogic.jpg"));
+        spriteManager = new SpriteManager();
+        renderManager = new RenderManager(spriteManager);
     }
 
     @Override
-    public void render(float delta) {
-        ScreenUtils.clear(1, 0, 0, 1);
-        player.manageInput();
-        batch.begin();
-        player.draw(batch);
-        batch.end();
+    public void render(float dt) {
+        spriteManager.update(dt);
+        renderManager.draw();
     }
 
     @Override
@@ -48,7 +44,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        batch.dispose();
-        player.dispose();
+        spriteManager.dispose();
+        renderManager.dispose();
     }
 }
