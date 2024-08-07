@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("StellarClash");
+		config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode()); //  Pantalla completa
 		new Lwjgl3Application(new StellarClash(), config);
 	}
 }
