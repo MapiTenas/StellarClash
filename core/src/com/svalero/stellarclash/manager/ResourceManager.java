@@ -2,6 +2,7 @@ package com.svalero.stellarclash.manager;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 public class ResourceManager {
@@ -20,6 +21,10 @@ public class ResourceManager {
     //Para conseguir una animación completa
     public static Array<TextureAtlas.AtlasRegion> getAnimation(String name){
         return assetManager.get("stellarclash.atlas", TextureAtlas.class).findRegions(name);
+    }
+    //Esto es para una sola imagen
+    public static TextureRegion getTexture(String name){
+        return assetManager.get("stellarclash.atlas", TextureAtlas.class).findRegion(name);
     }
 
 }

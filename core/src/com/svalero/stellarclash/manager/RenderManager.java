@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.svalero.stellarclash.domain.Enemy;
 
 public class RenderManager implements Disposable {
     //Se encarga de pintar las cosas en pantalla
@@ -27,6 +28,11 @@ public class RenderManager implements Disposable {
         spriteManager.player.draw(batch);
     }
 
+    private void drawEnemies(){
+        for (Enemy enemy : spriteManager.enemies) {
+            enemy.draw(batch);
+        }
+    }
     private void drawHud(){
         font.draw(batch, "Vidas: " + spriteManager.player.lives, 20, Gdx.graphics.getHeight() - 20);
         font.getData().setScale(2.0f); // Cambia el valor a lo que prefieras para ajustar el tamaño de la fuente
@@ -36,6 +42,7 @@ public class RenderManager implements Disposable {
         ScreenUtils.clear(1, 1, 1, 1);
         batch.begin();
         drawPlayer();
+        drawEnemies();
         drawHud();
         batch.end();
     }
