@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.svalero.stellarclash.domain.Enemy;
 import com.svalero.stellarclash.domain.EnemyShip;
 import com.svalero.stellarclash.domain.Player;
@@ -55,6 +56,24 @@ public class SpriteManager implements Disposable {
 
     }
 
+    private void handleCollisions(){
+        for(Enemy enemy : enemies) { //Recorremos el array de enemigos
+            if (enemy.rect.overlaps(player.rect)) { //Overlap es metodo propio de Rectangle
+                player.lives--; // Quitamos vidas al jugador
+                if(player.lives == 0){
+                    pause = true;
+                    Timer.schedule(new Timer.Task(){
+                        @Override
+                        public void run (){
+                            ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen());
+                        }
+                    }, 2);
+                }
+                enemies.removeValue(enemy,true); //Eliminamos el enemigo que choca
+            }
+        }
+    }
+
 
     private void handleGameScreenInput(){
         //Ir al menú con ESCAPE
@@ -71,6 +90,7 @@ public class SpriteManager implements Disposable {
             spawnEnemies();
             updateEnemies();
             player.manageInput();
+            handleCollisions();
         }
         handleGameScreenInput();
     }
