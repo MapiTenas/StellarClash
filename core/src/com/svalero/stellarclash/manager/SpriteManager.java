@@ -3,17 +3,13 @@ package com.svalero.stellarclash.manager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
-import com.svalero.stellarclash.domain.Bullet;
-import com.svalero.stellarclash.domain.Enemy;
-import com.svalero.stellarclash.domain.EnemyShip;
-import com.svalero.stellarclash.domain.Player;
+import com.svalero.stellarclash.domain.*;
 import com.svalero.stellarclash.screen.MainMenuScreen;
 
 public class SpriteManager implements Disposable {
@@ -21,8 +17,8 @@ public class SpriteManager implements Disposable {
     Player player;
     boolean pause;
     Array<Enemy> enemies;
-    float lastEnemyShip;
-    float timeBetweenEnemiesShip;
+    float lastEnemyShip, lastEnemyAsteroid;
+    float timeBetweenEnemiesShip, timeBetweenEnemyAsteroid;
 
     public SpriteManager(){
         initialize();
@@ -33,7 +29,9 @@ public class SpriteManager implements Disposable {
         pause = false;
         enemies = new Array<>();
         lastEnemyShip = TimeUtils.millis();
+        lastEnemyAsteroid = TimeUtils.millis();
         timeBetweenEnemiesShip = 1000000000/2; //(Si divido el numero puedo hacer que salgan a mayor velocidad (¿Para niveles podria estar bien?)
+        timeBetweenEnemyAsteroid = 4 * timeBetweenEnemiesShip;  //Mas lento!
     }
 
     private void updateEnemies(){
@@ -45,7 +43,9 @@ public class SpriteManager implements Disposable {
     private void spawnEnemies(){
         if (TimeUtils.nanoTime() - lastEnemyShip > timeBetweenEnemiesShip)
             spawnShipEnemy();
-        //Este metodo llama al otro que spawnea 1 enemigo, pero aqui se podria meter el spawn de otros, si salieran mas.
+
+        if (TimeUtils.nanoTime() - lastEnemyAsteroid > timeBetweenEnemyAsteroid)
+            spawnEnemyAsteroid();
     }
     private void spawnShipEnemy(){
         int x = Gdx.graphics.getWidth();
@@ -57,22 +57,43 @@ public class SpriteManager implements Disposable {
 
     }
 
+    private void spawnEnemyAsteroid() {
+        int x = Gdx.graphics.getWidth();
+        int y = MathUtils.random(0, Gdx.graphics.getHeight());
+        Enemy enemy = new EnemyAsteroid(new Vector2(x, y), "stone");
+        enemies.add(enemy);
+
+        lastEnemyAsteroid = TimeUtils.nanoTime();
+    }
+
+
     private void handleCollisions() {
         for (int i = enemies.size - 1; i >= 0; i--) {
             Enemy enemy = enemies.get(i);
 
             // Colisiones entre el enemigo y el jugador
             if (enemy.rect.overlaps(player.rect)) {
-                player.lives--;
-
-                if (player.lives == 0) {
+                if (enemy instanceof EnemyAsteroid){
+                    player.lives = 0;
                     pause = true;
-                    Timer.schedule(new Timer.Task(){
+                    Timer.schedule(new Timer.Task() {
                         @Override
-                        public void run (){
+                        public void run() {
                             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen());
                         }
                     }, 2);
+                } else {
+                    player.lives--;
+
+                    if (player.lives == 0) {
+                        pause = true;
+                        Timer.schedule(new Timer.Task() {
+                            @Override
+                            public void run() {
+                                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen());
+                            }
+                        }, 2);
+                    }
                 }
                 enemies.removeIndex(i);
                 continue;
@@ -81,9 +102,16 @@ public class SpriteManager implements Disposable {
             for (int j = player.bullets.size - 1; j >= 0; j--) {
                 Bullet bullet = player.bullets.get(j);
                 if (bullet.rect.overlaps(enemy.rect)) {
-                    enemies.removeIndex(i);
-                    player.bullets.removeIndex(j);
-                    player.score++;
+                    // Verificamos si el enemigo es un asteroide
+                    if (enemy instanceof EnemyAsteroid) {
+                        // Si es un asteroide, solo eliminamos la bala
+                        player.bullets.removeIndex(j);
+                    } else {
+                        // Si no es un asteroide, eliminamos al enemigo y la bala
+                        enemies.removeIndex(i);
+                        player.bullets.removeIndex(j);
+                        player.score++;
+                    }
                     break;
                 }
             }
