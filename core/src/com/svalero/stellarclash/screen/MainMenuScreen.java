@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -14,14 +16,19 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 
 public class MainMenuScreen implements Screen {
     private Stage stage;
+    Texture backgroundTexture;
+    private SpriteBatch spriteBatch;
+
 
 
     @Override
     public void show() {
         if (!VisUI.isLoaded())
             VisUI.load();
-
         stage = new Stage();
+        spriteBatch = new SpriteBatch();
+        backgroundTexture = new Texture("backgroundmainmenu.png"); // Cargar la textura del fondo
+
 
         VisTable table = new VisTable(true);
         table.setFillParent(true);
@@ -78,6 +85,10 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        spriteBatch.begin();
+        spriteBatch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        spriteBatch.end();
+
         // Pinta la UI en la pantalla. Dt es deltatime, para los fps
         stage.act(dt);
         stage.draw();
@@ -106,5 +117,7 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        spriteBatch.dispose();
+        backgroundTexture.dispose();
     }
 }

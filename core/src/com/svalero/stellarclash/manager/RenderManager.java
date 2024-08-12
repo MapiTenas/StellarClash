@@ -3,6 +3,7 @@ package com.svalero.stellarclash.manager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -25,6 +26,13 @@ public class RenderManager implements Disposable {
         batch = new SpriteBatch();
         font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
+    }
+    //Dibujar el fondo
+    private void drawBackground() {
+        TextureRegion background = spriteManager.getCurrentBackground();
+        if (background != null) {
+            batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
     }
 
     //Dibujar al jugador
@@ -65,6 +73,7 @@ public class RenderManager implements Disposable {
     public void draw(){
         ScreenUtils.clear(1, 1, 1, 1);
         batch.begin();
+        drawBackground();
         drawPlayer();
         drawEnemies();
         drawHud();
