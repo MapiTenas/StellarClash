@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.svalero.stellarclash.domain.Bullet;
 import com.svalero.stellarclash.domain.Enemy;
 
 public class RenderManager implements Disposable {
@@ -29,6 +30,7 @@ public class RenderManager implements Disposable {
     //Dibujar al jugador
     private void drawPlayer(){
         spriteManager.player.draw(batch);
+        spriteManager.player.drawBullets(batch);
     }
 
     private void drawEnemies(){
@@ -38,6 +40,7 @@ public class RenderManager implements Disposable {
     }
     private void drawHud(){
         font.draw(batch, "Vidas: " + spriteManager.player.lives, 20, Gdx.graphics.getHeight() - 20);
+        font.draw(batch, "Enemigos eliminados: " + spriteManager.player.score, 200, Gdx.graphics.getHeight() - 20);
         font.getData().setScale(2.0f); // Cambia el valor a lo que prefieras para ajustar el tamaño de la fuente
     }
 
@@ -49,6 +52,10 @@ public class RenderManager implements Disposable {
         shapeRenderer.setColor(0, 1, 0, 1); // Verde para los enemigos
         for (Enemy enemy : spriteManager.enemies) {
             shapeRenderer.rect(enemy.rect.x, enemy.rect.y, enemy.rect.width, enemy.rect.height);
+        }
+        shapeRenderer.setColor(0, 0, 1, 1); //Azul para las balas
+        for (Bullet bullet : spriteManager.player.bullets) {
+            shapeRenderer.rect(bullet.rect.x, bullet.rect.y, bullet.rect.width, bullet.rect.height);
         }
         shapeRenderer.end();
     }

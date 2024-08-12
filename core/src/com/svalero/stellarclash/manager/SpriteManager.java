@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
+import com.svalero.stellarclash.domain.Bullet;
 import com.svalero.stellarclash.domain.Enemy;
 import com.svalero.stellarclash.domain.EnemyShip;
 import com.svalero.stellarclash.domain.Player;
@@ -56,11 +57,15 @@ public class SpriteManager implements Disposable {
 
     }
 
-    private void handleCollisions(){
-        for(Enemy enemy : enemies) { //Recorremos el array de enemigos
-            if (enemy.rect.overlaps(player.rect)) { //Overlap es metodo propio de Rectangle
-                player.lives--; // Quitamos vidas al jugador
-                if(player.lives == 0){
+    private void handleCollisions() {
+        for (int i = enemies.size - 1; i >= 0; i--) {
+            Enemy enemy = enemies.get(i);
+
+            // Colisiones entre el enemigo y el jugador
+            if (enemy.rect.overlaps(player.rect)) {
+                player.lives--;
+
+                if (player.lives == 0) {
                     pause = true;
                     Timer.schedule(new Timer.Task(){
                         @Override
@@ -69,10 +74,22 @@ public class SpriteManager implements Disposable {
                         }
                     }, 2);
                 }
-                enemies.removeValue(enemy,true); //Eliminamos el enemigo que choca
+                enemies.removeIndex(i);
+                continue;
+            }
+            // Colisiones entre el enemigo y las balas
+            for (int j = player.bullets.size - 1; j >= 0; j--) {
+                Bullet bullet = player.bullets.get(j);
+                if (bullet.rect.overlaps(enemy.rect)) {
+                    enemies.removeIndex(i);
+                    player.bullets.removeIndex(j);
+                    player.score++;
+                    break;
+                }
             }
         }
     }
+
 
 
     private void handleGameScreenInput(){

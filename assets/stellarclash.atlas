@@ -1,6 +1,8 @@
 stellarclash.png
 size:1024,128
 repeat:none
+bullet
+bounds:794,22,28,14
 enemy
 index:11
 bounds:2,7,70,29
