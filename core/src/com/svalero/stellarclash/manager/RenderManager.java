@@ -41,6 +41,8 @@ public class RenderManager implements Disposable {
     private void drawHud(){
         font.draw(batch, "Vidas: " + spriteManager.player.lives, 20, Gdx.graphics.getHeight() - 20);
         font.draw(batch, "Enemigos eliminados: " + spriteManager.player.score, 200, Gdx.graphics.getHeight() - 20);
+        font.draw(batch, "Nivel: " + spriteManager.level, 600, Gdx.graphics.getHeight() - 20);
+
         font.getData().setScale(2.0f); // Cambia el valor a lo que prefieras para ajustar el tamaño de la fuente
     }
 

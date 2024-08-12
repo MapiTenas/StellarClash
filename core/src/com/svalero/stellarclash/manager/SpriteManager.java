@@ -19,6 +19,7 @@ public class SpriteManager implements Disposable {
     Array<Enemy> enemies;
     float lastEnemyShip, lastEnemyAsteroid;
     float timeBetweenEnemiesShip, timeBetweenEnemyAsteroid;
+    int level;
 
     public SpriteManager(){
         initialize();
@@ -27,6 +28,7 @@ public class SpriteManager implements Disposable {
     private void initialize(){
         player = new Player(new Vector2(0,0),"player");
         pause = false;
+        level = 1;
         enemies = new Array<>();
         lastEnemyShip = TimeUtils.millis();
         lastEnemyAsteroid = TimeUtils.millis();
@@ -136,6 +138,19 @@ public class SpriteManager implements Disposable {
             updateEnemies();
             player.manageInput();
             handleCollisions();
+
+            // Verificar si el score alcanza 15 pasamos de nivel
+            if (player.score >= 15) {
+                level++;
+                pause = true;
+                //TODO: spawnear enemigo final aqui.
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen());
+                    }
+                }, 2); // 2 segundos de delay antes de regresar al menú principal
+            }
         }
         handleGameScreenInput();
     }
