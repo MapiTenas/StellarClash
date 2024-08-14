@@ -24,6 +24,8 @@ public class SpriteManager implements Disposable {
     private TextureRegion background;
     private int nextLevelScore;
     private boolean levelChanged;
+    EnemyFinalBoss finalBoss;
+    boolean bossMovingUp;
 
     public SpriteManager(){
         initialize();
@@ -35,7 +37,7 @@ public class SpriteManager implements Disposable {
         background = ResourceManager.getTexture("farback");
         level = 1;
         levelChanged = false;
-        nextLevelScore = 15; //Puntuación para pasar al siguiente nivel //Todo: Modificar para que segun el nivel de dificultad escogido cambie
+        nextLevelScore = 5; //Puntuación para pasar al siguiente nivel //Todo: Modificar para que segun el nivel de dificultad escogido cambie
         enemies = new Array<>();
         lastEnemyShip = TimeUtils.millis();
         lastEnemyAsteroid = TimeUtils.millis();
@@ -60,16 +62,17 @@ public class SpriteManager implements Disposable {
         if (TimeUtils.nanoTime() - lastEnemyAsteroid > timeBetweenEnemyAsteroid)
             spawnEnemyAsteroid();
     }
+    //Metodo para crear naves enemigas
     private void spawnShipEnemy(){
         int x = Gdx.graphics.getWidth();
         int y = MathUtils.random(0, Gdx.graphics.getHeight());
-        Enemy enemy = new EnemyShip(new Vector2(x, y), "enemy"); //Posicion y nombre de la animación
+        Enemy enemy = new EnemyShip(new Vector2(x, y), "enemy");
         enemies.add(enemy);
 
         lastEnemyShip = TimeUtils.nanoTime();
 
     }
-
+    //Metodo para crear asteroides
     private void spawnEnemyAsteroid() {
         int x = Gdx.graphics.getWidth();
         int y = MathUtils.random(0, Gdx.graphics.getHeight());
@@ -77,6 +80,33 @@ public class SpriteManager implements Disposable {
         enemies.add(enemy);
 
         lastEnemyAsteroid = TimeUtils.nanoTime();
+    }
+
+    // Método para crear el jefe final
+    private void spawnFinalBoss() {
+        int x = Gdx.graphics.getWidth() - 200; // Aparece cerca del borde derecho de la pantalla
+        int y = Gdx.graphics.getHeight() / 2; // Aparece en el centro vertical de la pantalla
+        finalBoss = new EnemyFinalBoss(new Vector2(x, y), "finalboss");
+        bossMovingUp = true;
+    }
+
+    // Método para actualizar el movimiento del jefe final
+    private void updateFinalBoss() {
+        float speed = 100 * Gdx.graphics.getDeltaTime(); // Velocidad del jefe
+
+        // Movimiento de arriba hacia abajo y viceversa
+        if (bossMovingUp) {
+            finalBoss.move(0, speed); // Mover hacia arriba
+            if (finalBoss.position.y >= Gdx.graphics.getHeight() - finalBoss.rect.height) {
+                bossMovingUp = false; // Cambiar dirección hacia abajo
+            }
+        } else {
+            finalBoss.move(0, -speed); // Mover hacia abajo
+            if (finalBoss.position.y <= 0) {
+                bossMovingUp = true; // Cambiar dirección hacia arriba
+            }
+        }
+
     }
 
 
@@ -131,6 +161,24 @@ public class SpriteManager implements Disposable {
         }
     }
 
+    private void handleBossCollisions() {
+        for (int j = player.bullets.size - 1; j >= 0; j--) {
+            Bullet bullet = player.bullets.get(j);
+            if (bullet.rect.overlaps(finalBoss.rect)) {
+                finalBoss.lives--; // Resto una vida al jefe
+                player.bullets.removeIndex(j); // Elimino la bala
+
+                if (finalBoss.lives <= 0) {
+                    // El jefe final muere
+                    finalBoss = null;
+                    //Todo: ¿enviar a pantalla de victoria?
+                }
+                break;
+            }
+        }
+    }
+
+
 
 
     private void handleGameScreenInput(){
@@ -155,8 +203,9 @@ public class SpriteManager implements Disposable {
                 level++;
                 background = ResourceManager.getTexture("farback2");
                 levelChanged = true;
+                spawnFinalBoss(); // Llamar al método para crear el jefe final
+                //Todo: O es aqui donde se volveria a la pantalla de victoria???
                 /*pause = true;
-                //TODO: spawnear enemigo final aqui.
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
@@ -164,6 +213,11 @@ public class SpriteManager implements Disposable {
                     }
                 }, 2); // 2 segundos de delay antes de regresar al menú principal*/
             }
+            if (finalBoss != null) {
+                updateFinalBoss();
+                handleBossCollisions();
+            }
+
         }
         handleGameScreenInput();
     }

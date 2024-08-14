@@ -67,6 +67,11 @@ public class RenderManager implements Disposable {
         for (Bullet bullet : spriteManager.player.bullets) {
             shapeRenderer.rect(bullet.rect.x, bullet.rect.y, bullet.rect.width, bullet.rect.height);
         }
+        if (spriteManager.finalBoss != null) {
+            shapeRenderer.setColor(1, 1, 0, 1); // Amarillo para el jefe final
+            shapeRenderer.rect(spriteManager.finalBoss.rect.x, spriteManager.finalBoss.rect.y, spriteManager.finalBoss.rect.width, spriteManager.finalBoss.rect.height);
+        }
+
         shapeRenderer.end();
     }
 
@@ -76,6 +81,9 @@ public class RenderManager implements Disposable {
         drawBackground();
         drawPlayer();
         drawEnemies();
+        if (spriteManager.finalBoss != null) {
+            spriteManager.finalBoss.draw(batch);
+        }
         drawHud();
         batch.end();
         drawCollisionRects();
