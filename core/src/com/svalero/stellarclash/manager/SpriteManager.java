@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.svalero.stellarclash.domain.*;
+import com.svalero.stellarclash.screen.GameOverScreen;
 import com.svalero.stellarclash.screen.MainMenuScreen;
 
 public class SpriteManager implements Disposable {
@@ -122,7 +123,7 @@ public class SpriteManager implements Disposable {
                     Timer.schedule(new Timer.Task() {
                         @Override
                         public void run() {
-                            ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen());
+                            ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen());
                         }
                     }, 2);
                 } else {
@@ -133,7 +134,7 @@ public class SpriteManager implements Disposable {
                         Timer.schedule(new Timer.Task() {
                             @Override
                             public void run() {
-                                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen());
+                                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen());
                             }
                         }, 2);
                     }
