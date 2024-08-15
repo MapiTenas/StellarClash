@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.svalero.stellarclash.domain.*;
 import com.svalero.stellarclash.screen.GameOverScreen;
 import com.svalero.stellarclash.screen.MainMenuScreen;
+import com.svalero.stellarclash.screen.VictoryScreen;
 
 public class SpriteManager implements Disposable {
     //Se encarga de la lógica
@@ -107,7 +108,11 @@ public class SpriteManager implements Disposable {
                 bossMovingUp = true; // Cambiar dirección hacia arriba
             }
         }
+        // Gestionar disparos automáticos
+        finalBoss.tryToShoot();
 
+        // Actualizar balas del jefe final
+        finalBoss.updateBullets(Gdx.graphics.getDeltaTime());
     }
 
 
@@ -163,6 +168,10 @@ public class SpriteManager implements Disposable {
     }
 
     private void handleBossCollisions() {
+        if (finalBoss == null) {
+            return; // Si finalBoss es null, salimos del método
+        }
+
         for (int j = player.bullets.size - 1; j >= 0; j--) {
             Bullet bullet = player.bullets.get(j);
             if (bullet.rect.overlaps(finalBoss.rect)) {
@@ -172,13 +181,45 @@ public class SpriteManager implements Disposable {
                 if (finalBoss.lives <= 0) {
                     // El jefe final muere
                     finalBoss = null;
-                    //Todo: ¿enviar a pantalla de victoria?
+                    // Eliminar todas las balas del jefe final
+                    if (finalBoss != null) {
+                        finalBoss.bullets.clear(); // Vaciar la lista de balas del jefe
+                    }
+                    pause = true; // Pausar el juego para evitar más actualizaciones
+                    Timer.schedule(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            ((Game) Gdx.app.getApplicationListener()).setScreen(new VictoryScreen());
+                        }
+                    }, 2);
                 }
                 break;
             }
         }
-    }
 
+        // Colisiones con balas del jefe final
+        if (finalBoss != null) { // Verificar de nuevo si finalBoss no es null antes de acceder a las balas
+            for (int j = finalBoss.bullets.size - 1; j >= 0; j--) {
+                EnemyBullet bullet = finalBoss.bullets.get(j);
+                if (bullet.rect.overlaps(player.rect)) {
+                    player.lives--;
+                    finalBoss.bullets.removeIndex(j);
+
+                    if (player.lives <= 0) {
+                        // Si el boss mata al jugador con las balas
+                        pause = true;
+                        Timer.schedule(new Timer.Task() {
+                            @Override
+                            public void run() {
+                                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen());
+                            }
+                        }, 2);
+                    }
+                    break;
+                }
+            }
+        }
+    }
 
 
 
@@ -205,20 +246,11 @@ public class SpriteManager implements Disposable {
                 background = ResourceManager.getTexture("farback2");
                 levelChanged = true;
                 spawnFinalBoss(); // Llamar al método para crear el jefe final
-                //Todo: O es aqui donde se volveria a la pantalla de victoria???
-                /*pause = true;
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen());
-                    }
-                }, 2); // 2 segundos de delay antes de regresar al menú principal*/
             }
             if (finalBoss != null) {
                 updateFinalBoss();
                 handleBossCollisions();
             }
-
         }
         handleGameScreenInput();
     }

@@ -2,7 +2,7 @@ stellarclash.png
 size:2048,2048
 repeat:none
 bullet
-bounds:2,2,28,14
+bounds:1900,853,28,14
 enemy
 index:11
 bounds:1924,964,70,29
@@ -54,6 +54,8 @@ bounds:110,693,70,29
 enemy
 index:2
 bounds:110,662,70,29
+enemybullet
+bounds:2,2,28,14
 farback2
 bounds:2,954,1920,1080
 finalboss

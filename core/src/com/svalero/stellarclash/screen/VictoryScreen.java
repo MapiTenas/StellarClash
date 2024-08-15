@@ -13,9 +13,9 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
-public class GameOverScreen implements Screen {
+public class VictoryScreen implements Screen {
     private Stage stage;
-    Texture gameOverScreen;
+    Texture victoryScreen;
     private SpriteBatch spriteBatch;
 
     @Override
@@ -24,7 +24,7 @@ public class GameOverScreen implements Screen {
             VisUI.load();
         stage = new Stage();
         spriteBatch = new SpriteBatch();
-        gameOverScreen = new Texture("gameOverScreen.png");
+        victoryScreen = new Texture("victoryScreen.png");
 
 
         VisTable table = new VisTable(true);
@@ -54,7 +54,7 @@ public class GameOverScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         spriteBatch.begin();
-        spriteBatch.draw(gameOverScreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        spriteBatch.draw(victoryScreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         spriteBatch.end();
 
         // Pinta la UI en la pantalla. Dt es deltatime, para los fps
@@ -86,6 +86,6 @@ public class GameOverScreen implements Screen {
     public void dispose() {
         stage.dispose();
         spriteBatch.dispose();
-        gameOverScreen.dispose();
+        victoryScreen.dispose();
     }
 }

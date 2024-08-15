@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.svalero.stellarclash.domain.Bullet;
 import com.svalero.stellarclash.domain.Enemy;
+import com.svalero.stellarclash.domain.EnemyBullet;
 
 public class RenderManager implements Disposable {
     //Se encarga de pintar las cosas en pantalla
@@ -46,6 +47,16 @@ public class RenderManager implements Disposable {
             enemy.draw(batch);
         }
     }
+
+    // Método para dibujar las balas del jefe final
+    public void drawBossBullets(SpriteBatch batch) {
+        if (spriteManager.finalBoss != null) {
+            for (EnemyBullet bullet : spriteManager.finalBoss.bullets) {
+                bullet.draw(batch);
+            }
+        }
+    }
+
     private void drawHud(){
         font.draw(batch, "Vidas: " + spriteManager.player.lives, 20, Gdx.graphics.getHeight() - 20);
         font.draw(batch, "Enemigos eliminados: " + spriteManager.player.score, 200, Gdx.graphics.getHeight() - 20);
@@ -70,8 +81,11 @@ public class RenderManager implements Disposable {
         if (spriteManager.finalBoss != null) {
             shapeRenderer.setColor(1, 1, 0, 1); // Amarillo para el jefe final
             shapeRenderer.rect(spriteManager.finalBoss.rect.x, spriteManager.finalBoss.rect.y, spriteManager.finalBoss.rect.width, spriteManager.finalBoss.rect.height);
+            shapeRenderer.setColor(1, 0, 1, 1); // Morado para las balas del jefe final
+            for (EnemyBullet bullet : spriteManager.finalBoss.bullets) {
+                shapeRenderer.rect(bullet.rect.x, bullet.rect.y, bullet.rect.width, bullet.rect.height);
+            }
         }
-
         shapeRenderer.end();
     }
 
@@ -83,6 +97,8 @@ public class RenderManager implements Disposable {
         drawEnemies();
         if (spriteManager.finalBoss != null) {
             spriteManager.finalBoss.draw(batch);
+            drawBossBullets(batch); // Dibuja las balas del jefe final
+
         }
         drawHud();
         batch.end();
