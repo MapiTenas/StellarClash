@@ -54,7 +54,8 @@ public class SpriteManager implements Disposable {
         timeBetweenEnemiesShip = 1000000000/2; //(Si divido el numero puedo hacer que salgan a mayor velocidad (¿Para niveles podria estar bien?)
         timeBetweenEnemyAsteroid = 4 * timeBetweenEnemiesShip;  //Mas lento!
         mainTheme = ResourceManager.getSound("maintheme");
-        mainTheme.play();
+        if (ConfigurationManager.isSoundEnabled())
+            mainTheme.play();
         explosionSound = ResourceManager.getSound("explosion");
         gameOverSound = ResourceManager.getSound("gameover");
         bossSound = ResourceManager.getSound("buzz");
@@ -102,7 +103,8 @@ public class SpriteManager implements Disposable {
 
     // Método para crear el jefe final
     private void spawnFinalBoss() {
-        bossSound.play();
+        if (ConfigurationManager.isSoundEnabled())
+            bossSound.play();
         int x = Gdx.graphics.getWidth() - 200; // Aparece cerca del borde derecho de la pantalla
         int y = Gdx.graphics.getHeight() / 2; // Aparece en el centro vertical de la pantalla
         finalBoss = new EnemyFinalBoss(new Vector2(x, y), "finalboss");
@@ -141,8 +143,13 @@ public class SpriteManager implements Disposable {
             if (enemy.rect.overlaps(player.rect)) {
                 if (enemy instanceof EnemyAsteroid){
                     player.lives = 0;
-                    explosionSound.play();
-                    gameOverSound.play();
+                    //TODO:¿Esto esta bien?
+                    if (ConfigurationManager.isSoundEnabled()) {
+                        explosionSound.play();
+                        gameOverSound.play();
+                        mainTheme.stop();
+                        bossMusic.stop();
+                    }
                     pause = true;
                     Timer.schedule(new Timer.Task() {
                         @Override
@@ -151,12 +158,17 @@ public class SpriteManager implements Disposable {
                         }
                     }, 2);
                 } else {
-                    explosionSound.play();
+                    if (ConfigurationManager.isSoundEnabled())
+                        explosionSound.play();
                     player.lives--;
 
                     if (player.lives == 0) {
                         pause = true;
-                        gameOverSound.play();
+                        if (ConfigurationManager.isSoundEnabled()) {
+                            gameOverSound.play();
+                            mainTheme.stop();
+                            bossMusic.stop();
+                        }
                         Timer.schedule(new Timer.Task() {
                             @Override
                             public void run() {
@@ -180,7 +192,8 @@ public class SpriteManager implements Disposable {
                         // Si no es un asteroide, eliminamos al enemigo y la bala
                         enemies.removeIndex(i);
                         player.bullets.removeIndex(j);
-                        explosionSound.play();
+                        if (ConfigurationManager.isSoundEnabled())
+                            explosionSound.play();
                         player.score++;
                     }
                     break;
@@ -197,7 +210,8 @@ public class SpriteManager implements Disposable {
         for (int j = player.bullets.size - 1; j >= 0; j--) {
             Bullet bullet = player.bullets.get(j);
             if (bullet.rect.overlaps(finalBoss.rect)) {
-                explosionSound.play();
+                if (ConfigurationManager.isSoundEnabled())
+                    explosionSound.play();
                 finalBoss.lives--; // Resto una vida al jefe
                 player.bullets.removeIndex(j); // Elimino la bala
 
@@ -208,9 +222,11 @@ public class SpriteManager implements Disposable {
                     if (finalBoss != null) {
                         finalBoss.bullets.clear(); // Vaciar la lista de balas del jefe
                     }
-                    explosionSound.play();
-                    victorySound.play();
-                    bossMusic.stop();
+                    if (ConfigurationManager.isSoundEnabled()) {
+                        explosionSound.play();
+                        victorySound.play();
+                        bossMusic.stop();
+                    }
                     pause = true; // Pausar el juego para evitar más actualizaciones
                     Timer.schedule(new Timer.Task() {
                         @Override
@@ -252,7 +268,11 @@ public class SpriteManager implements Disposable {
     private void handleGameScreenInput(){
         //Ir al menú con ESCAPE
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen());
+            if (ConfigurationManager.isSoundEnabled()) {
+                mainTheme.stop();
+                bossMusic.stop();
+            }
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen());
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
             pause = !pause;
@@ -270,9 +290,11 @@ public class SpriteManager implements Disposable {
             if (player.score >= nextLevelScore  && !levelChanged) {
                 level++;
                 background = ResourceManager.getTexture("farback2");
-                mainTheme.stop();
-                mainTheme.dispose();
-                bossMusic.play();
+                if (ConfigurationManager.isSoundEnabled()) {
+                    mainTheme.stop();
+                    mainTheme.dispose();
+                    bossMusic.play();
+                }
                 levelChanged = true;
                 spawnFinalBoss(); // Llamar al método para crear el jefe final
             }
