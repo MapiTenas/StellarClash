@@ -2,15 +2,18 @@ package com.svalero.stellarclash.domain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.svalero.stellarclash.manager.ResourceManager;
 
 public class Player extends Character{
     public int score;
     public int lives;
     public Array<Bullet> bullets;
+    Sound bulletSound;
 
     public Player(String animationName){
         super(new Vector2(0,0), animationName);
@@ -44,6 +47,8 @@ public class Player extends Character{
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             shoot();
+            bulletSound = ResourceManager.getSound("pistola");
+            bulletSound.play();
         }
 
         // Controlamos que el jugador se salga de la pantalla

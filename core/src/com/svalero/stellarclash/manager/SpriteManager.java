@@ -3,6 +3,7 @@ package com.svalero.stellarclash.manager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -28,6 +29,13 @@ public class SpriteManager implements Disposable {
     private boolean levelChanged;
     EnemyFinalBoss finalBoss;
     boolean bossMovingUp;
+    Sound explosionSound;
+    Sound gameOverSound;
+    Sound bossSound;
+    Sound victorySound;
+    Sound mainTheme;
+    Sound bossMusic;
+
 
     public SpriteManager(){
         initialize();
@@ -45,6 +53,14 @@ public class SpriteManager implements Disposable {
         lastEnemyAsteroid = TimeUtils.millis();
         timeBetweenEnemiesShip = 1000000000/2; //(Si divido el numero puedo hacer que salgan a mayor velocidad (¿Para niveles podria estar bien?)
         timeBetweenEnemyAsteroid = 4 * timeBetweenEnemiesShip;  //Mas lento!
+        mainTheme = ResourceManager.getSound("maintheme");
+        mainTheme.play();
+        explosionSound = ResourceManager.getSound("explosion");
+        gameOverSound = ResourceManager.getSound("gameover");
+        bossSound = ResourceManager.getSound("buzz");
+        victorySound = ResourceManager.getSound("tada");
+        bossMusic = ResourceManager.getSound("bossmusic");
+
     }
 
     public TextureRegion getCurrentBackground() {
@@ -86,6 +102,7 @@ public class SpriteManager implements Disposable {
 
     // Método para crear el jefe final
     private void spawnFinalBoss() {
+        bossSound.play();
         int x = Gdx.graphics.getWidth() - 200; // Aparece cerca del borde derecho de la pantalla
         int y = Gdx.graphics.getHeight() / 2; // Aparece en el centro vertical de la pantalla
         finalBoss = new EnemyFinalBoss(new Vector2(x, y), "finalboss");
@@ -124,6 +141,8 @@ public class SpriteManager implements Disposable {
             if (enemy.rect.overlaps(player.rect)) {
                 if (enemy instanceof EnemyAsteroid){
                     player.lives = 0;
+                    explosionSound.play();
+                    gameOverSound.play();
                     pause = true;
                     Timer.schedule(new Timer.Task() {
                         @Override
@@ -132,10 +151,12 @@ public class SpriteManager implements Disposable {
                         }
                     }, 2);
                 } else {
+                    explosionSound.play();
                     player.lives--;
 
                     if (player.lives == 0) {
                         pause = true;
+                        gameOverSound.play();
                         Timer.schedule(new Timer.Task() {
                             @Override
                             public void run() {
@@ -159,6 +180,7 @@ public class SpriteManager implements Disposable {
                         // Si no es un asteroide, eliminamos al enemigo y la bala
                         enemies.removeIndex(i);
                         player.bullets.removeIndex(j);
+                        explosionSound.play();
                         player.score++;
                     }
                     break;
@@ -175,6 +197,7 @@ public class SpriteManager implements Disposable {
         for (int j = player.bullets.size - 1; j >= 0; j--) {
             Bullet bullet = player.bullets.get(j);
             if (bullet.rect.overlaps(finalBoss.rect)) {
+                explosionSound.play();
                 finalBoss.lives--; // Resto una vida al jefe
                 player.bullets.removeIndex(j); // Elimino la bala
 
@@ -185,6 +208,9 @@ public class SpriteManager implements Disposable {
                     if (finalBoss != null) {
                         finalBoss.bullets.clear(); // Vaciar la lista de balas del jefe
                     }
+                    explosionSound.play();
+                    victorySound.play();
+                    bossMusic.stop();
                     pause = true; // Pausar el juego para evitar más actualizaciones
                     Timer.schedule(new Timer.Task() {
                         @Override
@@ -244,6 +270,9 @@ public class SpriteManager implements Disposable {
             if (player.score >= nextLevelScore  && !levelChanged) {
                 level++;
                 background = ResourceManager.getTexture("farback2");
+                mainTheme.stop();
+                mainTheme.dispose();
+                bossMusic.play();
                 levelChanged = true;
                 spawnFinalBoss(); // Llamar al método para crear el jefe final
             }
