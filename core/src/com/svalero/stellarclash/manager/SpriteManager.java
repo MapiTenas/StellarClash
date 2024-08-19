@@ -16,6 +16,8 @@ import com.svalero.stellarclash.screen.GameOverScreen;
 import com.svalero.stellarclash.screen.MainMenuScreen;
 import com.svalero.stellarclash.screen.VictoryScreen;
 
+import static com.svalero.stellarclash.util.Constants.*;
+
 public class SpriteManager implements Disposable {
     //Se encarga de la lógica
     Player player;
@@ -47,7 +49,21 @@ public class SpriteManager implements Disposable {
         background = ResourceManager.getTexture("farback");
         level = 1;
         levelChanged = false;
-        nextLevelScore = 5; //Puntuación para pasar al siguiente nivel //Todo: Modificar para que segun el nivel de dificultad escogido cambie
+        String difficulty = ConfigurationManager.getDifficulty();
+        switch (difficulty) {
+            case LOW:
+                nextLevelScore = 10;
+                break;
+            case MEDIUM:
+                nextLevelScore = 15;
+                break;
+            case HARD:
+                nextLevelScore = 20;
+                break;
+            default:
+                nextLevelScore = 15;
+                break;
+        }
         enemies = new Array<>();
         lastEnemyShip = TimeUtils.millis();
         lastEnemyAsteroid = TimeUtils.millis();
@@ -143,7 +159,6 @@ public class SpriteManager implements Disposable {
             if (enemy.rect.overlaps(player.rect)) {
                 if (enemy instanceof EnemyAsteroid){
                     player.lives = 0;
-                    //TODO:¿Esto esta bien?
                     if (ConfigurationManager.isSoundEnabled()) {
                         explosionSound.play();
                         gameOverSound.play();

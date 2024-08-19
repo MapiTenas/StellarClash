@@ -9,6 +9,8 @@ import com.badlogic.gdx.utils.Array;
 import com.svalero.stellarclash.manager.ConfigurationManager;
 import com.svalero.stellarclash.manager.ResourceManager;
 
+import static com.svalero.stellarclash.util.Constants.*;
+
 public class Player extends Character{
     public int score;
     public int lives;
@@ -17,7 +19,7 @@ public class Player extends Character{
 
     public Player(String animationName){
         super(new Vector2(0,0), animationName);
-        lives = 3;
+        initializeLives();
         score = 0;
         bullets = new Array<>();
     }
@@ -25,9 +27,28 @@ public class Player extends Character{
     //Constructor que hereda de la clase padre.
     public Player (Vector2 position, String animationName){
         super(position, animationName);
-        lives = 3;
+        initializeLives();
         score = 0;
         bullets = new Array<>();
+    }
+
+    private void initializeLives() {
+        String difficulty = ConfigurationManager.getDifficulty();
+
+        switch (difficulty) {
+            case LOW:
+                lives = 5;
+                break;
+            case MEDIUM:
+                lives = 3;
+                break;
+            case HARD:
+                lives = 1;
+                break;
+            default:
+                lives = 3;
+                break;
+        }
     }
 
     //Esto, al gestionar los movimientos, se lo queda la clase jugador
