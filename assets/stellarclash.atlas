@@ -3,6 +3,8 @@ size:2048,2048
 repeat:none
 bullet
 bounds:1900,853,28,14
+disparotriple
+bounds:2014,1678,32,32
 enemy
 index:11
 bounds:1924,964,70,29
@@ -164,7 +166,7 @@ player
 index:12
 bounds:1581,825,101,42
 puntosextras
-bounds:2014,1678,32,32
+bounds:2014,1644,32,32
 stone
 index:3
 bounds:2,844,108,108
@@ -214,7 +216,7 @@ stone
 index:9
 bounds:1924,1420,109,85
 vida
-bounds:2014,1644,32,32
+bounds:2014,1610,32,32
 
 stellarclash2.png
 size:2048,2048

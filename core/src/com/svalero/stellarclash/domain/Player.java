@@ -16,12 +16,15 @@ public class Player extends Character{
     public int lives;
     public Array<Bullet> bullets;
     Sound bulletSound;
+    private boolean tripleShotActive;
+
 
     public Player(String animationName){
         super(new Vector2(0,0), animationName);
         initializeLives();
         score = 0;
         bullets = new Array<>();
+        tripleShotActive = false;
     }
 
     //Constructor que hereda de la clase padre.
@@ -49,6 +52,9 @@ public class Player extends Character{
                 lives = 3;
                 break;
         }
+    }
+    public void setTripleShot(boolean active) {
+        this.tripleShotActive = active;
     }
 
     //Esto, al gestionar los movimientos, se lo queda la clase jugador
@@ -101,6 +107,13 @@ public class Player extends Character{
     private void shoot() {
         Vector2 bulletPosition = new Vector2(position.x + rect.width, position.y + rect.height / 2);
         bullets.add(new Bullet(bulletPosition));
+
+        if (tripleShotActive) {
+            // Disparo hacia arriba
+            bullets.add(new Bullet(new Vector2(bulletPosition.x, bulletPosition.y + 20)));
+            // Disparo hacia abajo
+            bullets.add(new Bullet(new Vector2(bulletPosition.x, bulletPosition.y - 20)));
+        }
     }
 
     private void updateBullets(float deltaTime) {

@@ -140,10 +140,12 @@ public class SpriteManager implements Disposable {
         float randomValue = MathUtils.random();
 
         PowerUp powerUp;
-        if (randomValue < 0.5f) {  // 50% de probabilidad de que sea PowerUpVida
+        if (randomValue < 0.33f) {
             powerUp = new PowerUpVida(new Vector2(x, y));
-        } else {  // 50% de probabilidad de que sea PowerUpPuntosExtra
+        } else if (randomValue < 0.66f) {
             powerUp = new PowerUpPuntosExtra(new Vector2(x, y));
+        } else {  // 33% de probabilidad de que sea otro PowerUp
+            powerUp = new PowerUpDisparoTriple(new Vector2(x, y));
         }
 
         powerUps.add(powerUp);
@@ -334,7 +336,7 @@ public class SpriteManager implements Disposable {
             updatePowerUps(dt);
             handlePowerUpCollisions();
 
-            // Verificar si el score alcanza 15 pasamos de nivel
+            // Verificar si el score alcanza lo requerido para pasar de nivel
             if (player.score >= nextLevelScore  && !levelChanged) {
                 level++;
                 background = ResourceManager.getTexture("farback2");
