@@ -135,10 +135,22 @@ public class SpriteManager implements Disposable {
     private void spawnPowerUp() {
         int x = Gdx.graphics.getWidth();
         int y = MathUtils.random(0, Gdx.graphics.getHeight());
-        PowerUp powerUp = new PowerUpVida(new Vector2(x, y));
+
+        // Generamos un número aleatorio entre 0 y 1
+        float randomValue = MathUtils.random();
+
+        PowerUp powerUp;
+        if (randomValue < 0.5f) {  // 50% de probabilidad de que sea PowerUpVida
+            powerUp = new PowerUpVida(new Vector2(x, y));
+        } else {  // 50% de probabilidad de que sea PowerUpPuntosExtra
+            powerUp = new PowerUpPuntosExtra(new Vector2(x, y));
+        }
+
         powerUps.add(powerUp);
         lastPowerUpTime = TimeUtils.nanoTime();
     }
+
+
 
 
     // Método para actualizar el movimiento del jefe final
@@ -342,10 +354,17 @@ public class SpriteManager implements Disposable {
     }
 
     private void updatePowerUps(float dt) {
-        for (PowerUp powerUp : powerUps) {
+        for (int i = powerUps.size - 1; i >= 0; i--) {
+            PowerUp powerUp = powerUps.get(i);
             powerUp.update(dt);
+
+            // Si el power-up es de tipo PowerUpPuntosExtra y debe desaparecer, lo eliminamos
+            if (powerUp instanceof PowerUpPuntosExtra && ((PowerUpPuntosExtra) powerUp).shouldDisappear()) {
+                powerUps.removeIndex(i);
+            }
         }
     }
+
 
     private void handlePowerUpCollisions() {
         for (int i = powerUps.size - 1; i >= 0; i--) {
