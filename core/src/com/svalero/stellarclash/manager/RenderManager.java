@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.svalero.stellarclash.domain.Bullet;
 import com.svalero.stellarclash.domain.Enemy;
 import com.svalero.stellarclash.domain.EnemyBullet;
+import com.svalero.stellarclash.domain.PowerUp;
 
 public class RenderManager implements Disposable {
     //Se encarga de pintar las cosas en pantalla
@@ -57,6 +58,12 @@ public class RenderManager implements Disposable {
         }
     }
 
+    private void drawPowerUps() {
+        for (PowerUp powerUp : spriteManager.powerUps) {
+            powerUp.draw(batch);
+        }
+    }
+
     private void drawHud(){
         font.draw(batch, "Vidas: " + spriteManager.player.lives, 20, Gdx.graphics.getHeight() - 20);
         font.draw(batch, "Enemigos eliminados: " + spriteManager.player.score, 200, Gdx.graphics.getHeight() - 20);
@@ -95,6 +102,7 @@ public class RenderManager implements Disposable {
         drawBackground();
         drawPlayer();
         drawEnemies();
+        drawPowerUps();  // Dibujar PowerUps
         if (spriteManager.finalBoss != null) {
             spriteManager.finalBoss.draw(batch);
             drawBossBullets(batch); // Dibuja las balas del jefe final

@@ -37,6 +37,10 @@ public class SpriteManager implements Disposable {
     Sound victorySound;
     Sound mainTheme;
     Sound bossMusic;
+    Array<PowerUp> powerUps;
+    float lastPowerUpTime;
+    float timeBetweenPowerUps = 10f;  // Intervalo entre apariciones de power-ups
+
 
 
     public SpriteManager(){
@@ -77,6 +81,8 @@ public class SpriteManager implements Disposable {
         bossSound = ResourceManager.getSound("buzz");
         victorySound = ResourceManager.getSound("tada");
         bossMusic = ResourceManager.getSound("bossmusic");
+        powerUps = new Array<>();
+        lastPowerUpTime = TimeUtils.nanoTime();
 
     }
 
@@ -126,6 +132,14 @@ public class SpriteManager implements Disposable {
         finalBoss = new EnemyFinalBoss(new Vector2(x, y), "finalboss");
         bossMovingUp = true;
     }
+    private void spawnPowerUp() {
+        int x = Gdx.graphics.getWidth();
+        int y = MathUtils.random(0, Gdx.graphics.getHeight());
+        PowerUp powerUp = new PowerUpVida(new Vector2(x, y));
+        powerUps.add(powerUp);
+        lastPowerUpTime = TimeUtils.nanoTime();
+    }
+
 
     // Método para actualizar el movimiento del jefe final
     private void updateFinalBoss() {
@@ -301,13 +315,19 @@ public class SpriteManager implements Disposable {
             player.manageInput();
             handleCollisions();
 
+            // Spawnear PowerUp
+            if (TimeUtils.nanoTime() - lastPowerUpTime > timeBetweenPowerUps * 1_000_000_000) {
+                spawnPowerUp();
+            }
+            updatePowerUps(dt);
+            handlePowerUpCollisions();
+
             // Verificar si el score alcanza 15 pasamos de nivel
             if (player.score >= nextLevelScore  && !levelChanged) {
                 level++;
                 background = ResourceManager.getTexture("farback2");
                 if (ConfigurationManager.isSoundEnabled()) {
                     mainTheme.stop();
-                    mainTheme.dispose();
                     bossMusic.play();
                 }
                 levelChanged = true;
@@ -320,6 +340,23 @@ public class SpriteManager implements Disposable {
         }
         handleGameScreenInput();
     }
+
+    private void updatePowerUps(float dt) {
+        for (PowerUp powerUp : powerUps) {
+            powerUp.update(dt);
+        }
+    }
+
+    private void handlePowerUpCollisions() {
+        for (int i = powerUps.size - 1; i >= 0; i--) {
+            PowerUp powerUp = powerUps.get(i);
+            if (powerUp.rect.overlaps(player.rect)) {
+                powerUp.applyEffect(player);
+                powerUps.removeIndex(i);
+            }
+        }
+    }
+
 
     @Override
     public void dispose() {
