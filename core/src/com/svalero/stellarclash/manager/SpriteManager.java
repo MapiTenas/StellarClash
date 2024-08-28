@@ -47,7 +47,7 @@ public class SpriteManager implements Disposable {
     }
 
     private void initialize(){
-        player = new Player(new Vector2(0,0),"player");
+        player = new Player(new Vector2(75,540),"player");
         pause = false;
         background = ResourceManager.getTexture("farback");
         level = 1;
@@ -359,7 +359,6 @@ public class SpriteManager implements Disposable {
             PowerUp powerUp = powerUps.get(i);
             powerUp.update(dt);
 
-            // Si el power-up es de tipo PowerUpPuntosExtra y debe desaparecer, lo eliminamos
             if (powerUp instanceof PowerUpPuntosExtra && ((PowerUpPuntosExtra) powerUp).shouldDisappear()) {
                 powerUps.removeIndex(i);
             }

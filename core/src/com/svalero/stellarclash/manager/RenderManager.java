@@ -102,15 +102,15 @@ public class RenderManager implements Disposable {
         drawBackground();
         drawPlayer();
         drawEnemies();
-        drawPowerUps();  // Dibujar PowerUps
+        drawPowerUps();
         if (spriteManager.finalBoss != null) {
             spriteManager.finalBoss.draw(batch);
-            drawBossBullets(batch); // Dibuja las balas del jefe final
+            drawBossBullets(batch);
 
         }
         drawHud();
         batch.end();
-        drawCollisionRects();
+        //drawCollisionRects(); Comentado para la entrega!
     }
 
 

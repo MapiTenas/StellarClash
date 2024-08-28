@@ -14,7 +14,6 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         ResourceManager.loadAllResources();
-        // FIXME La carga debería hacerse en un SplashScreen antes de llegar a ésta
         while (!ResourceManager.update()) {}
         spriteManager = new SpriteManager();
         renderManager = new RenderManager(spriteManager);

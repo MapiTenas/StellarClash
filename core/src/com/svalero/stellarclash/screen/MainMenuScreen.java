@@ -34,7 +34,7 @@ public class MainMenuScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
 
-        VisTextButton playButton = new VisTextButton("PLAY");
+        VisTextButton playButton = new VisTextButton("JUGAR");
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -44,7 +44,18 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        VisTextButton configButton = new VisTextButton("CONFIGURATION");
+        VisTextButton instructionButton = new VisTextButton("INSTRUCCIONES");
+        instructionButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Ir a la pantalla de instrucciones
+                dispose();
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new InstructionScreen());
+
+            }
+        });
+
+        VisTextButton configButton = new VisTextButton("CONFIGURACIÓN");
         configButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -55,7 +66,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        VisTextButton quitButton = new VisTextButton("QUIT");
+        VisTextButton quitButton = new VisTextButton("SALIR");
         quitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -69,9 +80,11 @@ public class MainMenuScreen implements Screen {
 
         // Añade filas a la tabla y añade los componentes
         table.row();
-        table.add(playButton).center().width(200).height(100).pad(5);
+        table.add(playButton).center().width(200).height(50).pad(5);
         table.row();
         table.add(configButton).center().width(200).height(50).pad(5);
+        table.row();
+        table.add(instructionButton).center().width(200).height(50).pad(5);
         table.row();
         table.add(quitButton).center().width(200).height(50).pad(5);
         table.row();
