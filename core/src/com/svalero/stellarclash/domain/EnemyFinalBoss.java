@@ -25,16 +25,16 @@ public class EnemyFinalBoss extends Enemy{
         String difficulty = ConfigurationManager.getDifficulty();
         switch (difficulty) {
             case LOW:
-                lives = 5;
+                lives = 6;
                 break;
             case MEDIUM:
-                lives = 7;
+                lives = 8;
                 break;
             case HARD:
-                lives = 9;
+                lives = 10;
                 break;
             default:
-                lives = 7;
+                lives = 6;
                 break;
         }
     }

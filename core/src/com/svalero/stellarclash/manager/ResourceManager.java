@@ -40,6 +40,9 @@ public class ResourceManager {
         assetManager.load("sounds" + File.separator + "gameover.wav", Sound.class);
         assetManager.load("sounds" + File.separator + "buzz.wav", Sound.class);
         assetManager.load("sounds" + File.separator + "tada.wav", Sound.class);
+        assetManager.load("sounds" + File.separator + "extralifesound.wav", Sound.class);
+        assetManager.load("sounds" + File.separator + "extrapointssound.wav", Sound.class);
+        assetManager.load("sounds" + File.separator + "tripleshotsound.wav", Sound.class);
 
 
     }

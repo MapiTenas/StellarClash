@@ -1,26 +1,32 @@
 package com.svalero.stellarclash.domain;
 
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.svalero.stellarclash.manager.ConfigurationManager;
+import com.svalero.stellarclash.manager.ResourceManager;
 
 public class PowerUpPuntosExtra extends PowerUp {
 
     private long spawnTime;  // Tiempo en el que apareció el PowerUp
+    Sound extraPoints;
+
 
     public PowerUpPuntosExtra(Vector2 position) {
-        super(position, "puntosextras");  // Usamos la textura "puntosextras" para este power-up
+        super(position, "puntosextras");
         spawnTime = TimeUtils.nanoTime();  // Guardamos el momento en el que aparece el power-up
     }
 
     @Override
     public void applyEffect(Player player) {
-        player.score += 3;  // Suma 10 puntos al score del jugador
+        extraPoints = ResourceManager.getSound("extrapointssound");
+        if (ConfigurationManager.isSoundEnabled())
+            extraPoints.play();
+        player.score += 3;
     }
 
-    // Método para verificar si el power-up debe desaparecer
     public boolean shouldDisappear() {
-        // Si han pasado más de 4 segundos desde que apareció, debe desaparecer
-        return TimeUtils.nanoTime() - spawnTime > 5_000_000_000L;
+        return TimeUtils.nanoTime() - spawnTime > 6_000_000_000L;
     }
 }

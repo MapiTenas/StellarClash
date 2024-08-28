@@ -39,8 +39,7 @@ public class SpriteManager implements Disposable {
     Sound bossMusic;
     Array<PowerUp> powerUps;
     float lastPowerUpTime;
-    float timeBetweenPowerUps = 10f;  // Intervalo entre apariciones de power-ups
-
+    float timeBetweenPowerUps = 10f;
 
 
     public SpriteManager(){
