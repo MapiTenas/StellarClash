@@ -9,13 +9,13 @@ import com.svalero.stellarclash.manager.ResourceManager;
 
 public class PowerUpPuntosExtra extends PowerUp {
 
-    private long spawnTime;  // Tiempo en el que apareció el PowerUp
+    private long spawnTime;
     Sound extraPoints;
 
 
     public PowerUpPuntosExtra(Vector2 position) {
         super(position, "puntosextras");
-        spawnTime = TimeUtils.nanoTime();  // Guardamos el momento en el que aparece el power-up
+        spawnTime = TimeUtils.nanoTime();
     }
 
     @Override

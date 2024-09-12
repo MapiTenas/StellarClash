@@ -17,7 +17,7 @@ public class RenderManager implements Disposable {
     SpriteBatch batch;
     BitmapFont font;
     SpriteManager spriteManager;
-    ShapeRenderer shapeRenderer;
+    //ShapeRenderer shapeRenderer;
 
     public RenderManager(SpriteManager spriteManager){
         this.spriteManager = spriteManager;
@@ -27,7 +27,7 @@ public class RenderManager implements Disposable {
     private void initialize(){
         batch = new SpriteBatch();
         font = new BitmapFont();
-        shapeRenderer = new ShapeRenderer();
+        //shapeRenderer = new ShapeRenderer();
     }
     //Dibujar el fondo
     private void drawBackground() {
@@ -73,7 +73,7 @@ public class RenderManager implements Disposable {
     }
 
     //Para visualizar los rectangulos de colisión!
-    private void drawCollisionRects(){
+    /*private void drawCollisionRects(){
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(1, 0, 0, 1); // Rojo para el jugador
         shapeRenderer.rect(spriteManager.player.rect.x, spriteManager.player.rect.y, spriteManager.player.rect.width, spriteManager.player.rect.height);
@@ -94,7 +94,7 @@ public class RenderManager implements Disposable {
             }
         }
         shapeRenderer.end();
-    }
+    }*/
 
     public void draw(){
         ScreenUtils.clear(1, 1, 1, 1);
@@ -110,7 +110,7 @@ public class RenderManager implements Disposable {
         }
         drawHud();
         batch.end();
-        //drawCollisionRects(); Comentado para la entrega!
+        //drawCollisionRects();
     }
 
 
@@ -118,6 +118,6 @@ public class RenderManager implements Disposable {
     public void dispose() {
         batch.dispose();
         font.dispose();
-        shapeRenderer.dispose();
+        //shapeRenderer.dispose();
     }
 }

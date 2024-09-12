@@ -70,7 +70,7 @@ public class SpriteManager implements Disposable {
         enemies = new Array<>();
         lastEnemyShip = TimeUtils.millis();
         lastEnemyAsteroid = TimeUtils.millis();
-        timeBetweenEnemiesShip = 1000000000/2; //(Si divido el numero puedo hacer que salgan a mayor velocidad (¿Para niveles podria estar bien?)
+        timeBetweenEnemiesShip = 1000000000/2; //(Si divido el numero puedo hacer que salgan a mayor velocidad
         timeBetweenEnemyAsteroid = 4 * timeBetweenEnemiesShip;  //Mas lento!
         mainTheme = ResourceManager.getSound("maintheme");
         if (ConfigurationManager.isSoundEnabled())
